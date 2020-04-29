@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.xworkz.cm.dao.RegistrationDAO;
@@ -18,6 +19,8 @@ public class RegisterServiceImpl implements RegisterService {
 
 	@Autowired
 	private RegistrationDAO dao;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	private static final String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
 	private static final String CHAR_UPPER = CHAR_LOWER.toUpperCase();
@@ -88,9 +91,10 @@ public class RegisterServiceImpl implements RegisterService {
 			char rndChar = CHARS.charAt(rndCharAt);
 			sb.append(rndChar);
 		}
-		registerDTO.setPassword(sb.toString());
+		//registerDTO.setPassword(sb.toString());
 		RegisterEntity registerEntity = new RegisterEntity();
 		BeanUtils.copyProperties(registerDTO, registerEntity);
+		registerEntity.setPassword(bCryptPasswordEncoder.encode(sb));
 		Serializable result=dao.saveRegister(registerEntity);
 		if(result!=null) {
 			return sb.toString();

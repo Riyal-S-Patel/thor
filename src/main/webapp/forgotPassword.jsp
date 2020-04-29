@@ -17,28 +17,26 @@
 <body>
 	<nav class="navbar navbar-dark bg-dark"> <span
 		class="navbar-brand mb-0 h1"><h2 style="color: orange">X-workz
-			CM</h2></span> <span class="navbar-text"> <a href="register.jsp">Register</a>
-		<a href="index.jsp">Home</a></nav>
+			CM</h2></span> <span class="navbar-text"> <a href="index.jsp">Home</a> <a
+		href="login.jsp">Login</a></nav>
 	<br>
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-md-6">
-				<form class="col-md-12" action="userLogin.do" method="post">
-					<h3>${loginmsg}</h3>
-					<h3>${block}</h3>
-					<h3>${email}</h3>
+				<form class="col-md-12" action="forgotpsw.do" method="post">
+					<h3 style="color: red">${email}</h3>
 					<div class="form-group">
 						<label for="email">Email</label> <input type="email"
 							class="form-control" id="email" placeholder="Enter email"
 							name="email">
 					</div>
-					<div class="form-group">
-						<label for="password">Password</label> <input type="password"
-							class="form-control" id="password" placeholder="Enter Password"
-							name="password">
+					<br>
+					<div class="row justify-content-center">
+						<button type="submit" class="btn col-md-6 btn-primary">Reset</button>
 					</div>
-					<div class="row justify-content-between">
-						<button type="submit" class="btn col-md-6 btn-success">Login</button><span><a href="forgotPassword.jsp">forgot Password</a></span>
+					<br>
+					<div class="row justify-content-center">
+						<h3>${pswdmsg}</h3>
 					</div>
 				</form>
 			</div>
