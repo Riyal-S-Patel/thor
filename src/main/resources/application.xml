@@ -14,6 +14,10 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 	
+	<bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" id="bCryptPasswordEncoder">
+			
+	</bean>
+	
 	<bean
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
 		id="localSessionFactoryBean">

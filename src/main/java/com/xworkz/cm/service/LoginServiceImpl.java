@@ -1,6 +1,7 @@
 package com.xworkz.cm.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -13,6 +14,8 @@ public class LoginServiceImpl implements LoginService {
 
 	@Autowired
 	private LoginDAO loginDAO;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	public LoginServiceImpl() {
 		System.out.println("created \t " + this.getClass().getSimpleName());
@@ -24,10 +27,10 @@ public class LoginServiceImpl implements LoginService {
 			// RegisterEntity entity = this.loginDAO.getEmailAndPassword(loginDTO);
 			RegisterEntity entity = this.loginDAO.getByEmail(loginDTO.getEmail());
 			if (entity != null) {
-				if (entity.getPassword().equals(loginDTO.getPassword())) {
+				if (bCryptPasswordEncoder.matches(loginDTO.getPassword(), entity.getPassword())) {
 					if (entity.getCount() < 4 && entity.getCount() >= 0) {
 						if (entity.getCount() != 0) {
-							 this.loginDAO.updateCountByEmail(0, entity.getEmail() );
+							this.loginDAO.updateCountByEmail(0, entity.getEmail());
 							System.out.println("user Count is Updated by 0");
 						}
 						System.out.println("email and password is valid");
@@ -38,11 +41,12 @@ public class LoginServiceImpl implements LoginService {
 						return null;
 					}
 
-				} else if (!entity.getPassword().equals(loginDTO.getPassword())) {
+				} else if (!bCryptPasswordEncoder.matches(loginDTO.getPassword(), entity.getPassword())) {
 					if (entity.getCount() < 4) {
-						entity.setCount(entity.getCount()+1);
-						 this.loginDAO.updateCountByEmail(entity.getCount(),entity.getEmail());
-					}if(entity.getCount()>3) {
+						entity.setCount(entity.getCount() + 1);
+						this.loginDAO.updateCountByEmail(entity.getCount(), entity.getEmail());
+					}
+					if (entity.getCount() > 3) {
 						System.out.println("Register user is blocked");
 						model.addAttribute("block", "Register User is blocked");
 					}
