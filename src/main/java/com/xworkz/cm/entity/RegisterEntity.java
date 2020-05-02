@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Getter;
@@ -41,7 +42,9 @@ public class RegisterEntity implements Serializable {
 	@Column(name = "COUNT")
 	private int count;
 
+	private static final Logger logger = Logger.getLogger(RegisterEntity.class);
+
 	public RegisterEntity() {
-		System.out.println("created \t" + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 }

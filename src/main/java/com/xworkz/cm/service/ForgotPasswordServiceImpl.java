@@ -2,6 +2,7 @@ package com.xworkz.cm.service;
 
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,20 +18,22 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	private static final Logger logger = Logger.getLogger(ForgotPasswordServiceImpl.class);
+
 	public ForgotPasswordServiceImpl() {
-		System.out.println("created \t" + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 
 	public String validateEmail(ForgotPasswordDTO forgotPasswordDTO) {
-		System.out.println("invoking validateEmail...");
+		logger.info("invoking validateEmail...");
 		try {
 			RegisterEntity registerEntity = this.forgotPasswordDAO.getByEmail(forgotPasswordDTO.getEmail());
-			System.out.println("RegisterEntity in ForgotPasswordServiceImpl \t" + registerEntity);
+			logger.info("RegisterEntity in ForgotPasswordServiceImpl \t" + registerEntity);
 			if (registerEntity == null) {
 				return "email not matching";
 			}
 			int id = registerEntity.getId();
-			System.out.println("Id From DB \t" + id);
+			logger.info("Id From DB \t" + id);
 			int count = 0;
 			if (registerEntity != null) {
 				String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -45,10 +48,10 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 				for (int i = 0; i < length; i++) {
 					pswd += psw[i];
 				}
-				System.out.println("Password Generated \t" + pswd);
+				logger.info("Password Generated \t" + pswd);
 				registerEntity.setPassword(bCryptPasswordEncoder.encode(pswd));
 				registerEntity.setCount(count);
-				System.out.println("Count is \t" + count);
+				logger.info("Count is \t" + count);
 				this.forgotPasswordDAO.updatePassword(bCryptPasswordEncoder.encode(pswd), count, id);
 				return "your new password is :" + pswd + " use this password to login again";
 			}

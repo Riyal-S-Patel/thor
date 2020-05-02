@@ -2,6 +2,8 @@ package com.xworkz.cm.dto;
 
 import java.io.Serializable;
 
+import org.apache.log4j.Logger;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,7 +15,9 @@ public class LoginDTO implements Serializable {
 	private String email;
 	private String password;
 
+	private static final Logger logger = Logger.getLogger(LoginDTO.class);
+
 	public LoginDTO() {
-		System.out.println("created \t" + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 }

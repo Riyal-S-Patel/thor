@@ -1,5 +1,6 @@
 package com.xworkz.cm.controller;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,32 +16,32 @@ public class LoginController {
 	@Autowired
 	private LoginService loginService;
 
+	private static final Logger logger = Logger.getLogger(LoginController.class);
+
 	public LoginController() {
-		System.out.println("created \t" + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 
 	@RequestMapping("userLogin.do")
 	public String onLogin(LoginDTO loginDTO, Model model) {
-		System.out.println("invoking onLogin....");
+		logger.info("invoking onLogin....");
 		String email = loginDTO.getEmail();
-		System.out.println("email is :" + email);
-
+		logger.info("email is :" + email);
 		String password = loginDTO.getPassword();
-		System.out.println("password is :" + password);
-
+		logger.info("password is :" + password);
 		try {
 			RegisterEntity registerEntity = this.loginService.validateLogin(loginDTO, model);
-			System.out.println("entity :" + registerEntity);
+			logger.info("entity :" + registerEntity);
 			if (registerEntity != null) {
-				System.out.println("Email and password is valid");
+				logger.info("Email and password is valid");
 				return "home";
 			} else {
-				System.out.println("Email and password is invalid..");
+				logger.info("Email and password is invalid..");
 				model.addAttribute("loginmsg", "Email or Password is wrong");
 				return "login";
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return "login";
 	}

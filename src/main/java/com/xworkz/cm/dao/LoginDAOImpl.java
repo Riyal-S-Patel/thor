@@ -2,6 +2,7 @@ package com.xworkz.cm.dao;
 
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -16,12 +17,14 @@ public class LoginDAOImpl implements LoginDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	private static final Logger logger = Logger.getLogger(LoginDAOImpl.class);
+
 	public LoginDAOImpl() {
-		System.out.println("created \t" + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 
 	public RegisterEntity getEmailAndPassword(LoginDTO loginDTO) {
-		System.out.println("invoking getEmailAndPassword()...");
+		logger.info("invoking getEmailAndPassword()...");
 		Session session = null;
 		try {
 			session = sessionFactory.openSession();
@@ -32,13 +35,13 @@ public class LoginDAOImpl implements LoginDAO {
 			RegisterEntity registerEntity = (RegisterEntity) query.uniqueResult();
 			System.out.println("entity : \t " + registerEntity);
 			if (registerEntity != null) {
-				System.out.println("Email and Password are correct");
+				logger.info("Email and Password are correct");
 				return registerEntity;
 			} else {
 				return null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
 				session.close();
@@ -48,7 +51,7 @@ public class LoginDAOImpl implements LoginDAO {
 	}
 
 	public RegisterEntity getByEmail(String email) {
-		System.out.println("invoking getEmail()...");
+		logger.info("invoking getEmail()...");
 		Session session = null;
 		try {
 			session = sessionFactory.openSession();
@@ -56,15 +59,15 @@ public class LoginDAOImpl implements LoginDAO {
 			Query query = session.createQuery(hql);
 			query.setParameter("email", email);
 			RegisterEntity registerEntity = (RegisterEntity) query.uniqueResult();
-			System.out.println("entity : \t " + registerEntity);
+			logger.info("entity : \t " + registerEntity);
 			if (registerEntity != null) {
-				System.out.println("Email is correct");
+				logger.info("Email is correct");
 				return registerEntity;
 			} else {
 				return null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
 				session.close();
@@ -74,7 +77,7 @@ public class LoginDAOImpl implements LoginDAO {
 	}
 
 	public void updateCountByEmail(int count, String email) {
-		System.out.println("invoking updateCountByEmail()...");
+		logger.info("invoking updateCountByEmail()...");
 		Session session = null;
 		try {
 			session = sessionFactory.openSession();
@@ -86,7 +89,7 @@ public class LoginDAOImpl implements LoginDAO {
 			query.executeUpdate();
 			session.getTransaction().commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			session.getTransaction().rollback();
 		} finally {
 			if (Objects.nonNull(session)) {

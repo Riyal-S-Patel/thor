@@ -2,6 +2,7 @@ package com.xworkz.cm.controller;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +18,10 @@ public class RegistrationController {
 	@Autowired
 	private RegisterService registerService;
 
+	private static final Logger logger = Logger.getLogger(RegistrationController.class);
+
 	public RegistrationController() {
-		System.out.println("created \t" + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 
 	@RequestMapping("register.do")
@@ -28,20 +31,20 @@ public class RegistrationController {
 
 	@RequestMapping(value = "registerUser.do", method = RequestMethod.POST)
 	public String onRegisterUser(RegisterDTO registerDTO, Model model) {
-		System.out.println("invoking onRegisterUser\t" + registerDTO);
+		logger.info("invoking onRegisterUser\t" + registerDTO);
 		Map<String, Object> map = this.registerService.isValidate(registerDTO);
 		boolean res = (Boolean) map.get("isValid");
-		System.out.println("res :" + res);
+		logger.info("res :" + res);
 		if ((boolean) res) {
 			String password = registerService.genPassNSaveData(registerDTO);
 			if (password != null) {
-				System.out.println("data saved successfully");
+				logger.info("data saved successfully");
 				model.addAttribute("register", "register Successfully");
 				model.addAttribute("password", "your Password is : " + password);
 			}
 		} else {
 			model.addAttribute("data", map);
-			System.out.println("Map :" + map);
+			logger.info("Map :" + map);
 		}
 		return "register";
 	}
