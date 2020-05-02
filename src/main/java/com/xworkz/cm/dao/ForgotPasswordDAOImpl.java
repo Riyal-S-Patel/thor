@@ -2,6 +2,7 @@ package com.xworkz.cm.dao;
 
 import java.util.Objects;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -15,12 +16,14 @@ public class ForgotPasswordDAOImpl implements ForgotPasswordDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	private static final Logger logger = Logger.getLogger(ForgotPasswordDAOImpl.class);
+
 	public ForgotPasswordDAOImpl() {
-		System.out.println("created \t" + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 
 	public RegisterEntity getByEmail(String email) {
-		System.out.println("invoking getEmail()...");
+		logger.info("invoking getEmail()...");
 		Session session = null;
 		try {
 			session = sessionFactory.openSession();
@@ -28,15 +31,15 @@ public class ForgotPasswordDAOImpl implements ForgotPasswordDAO {
 			Query query = session.createQuery(hql);
 			query.setParameter("email", email);
 			RegisterEntity registerEntity = (RegisterEntity) query.uniqueResult();
-			System.out.println("entity : \t " + registerEntity);
+			logger.info("entity : \t " + registerEntity);
 			if (registerEntity != null) {
-				System.out.println("Email is correct");
+				logger.info("Email is correct");
 				return registerEntity;
 			} else {
 				return null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
 				session.close();
@@ -44,8 +47,9 @@ public class ForgotPasswordDAOImpl implements ForgotPasswordDAO {
 		}
 		return null;
 	}
+
 	public int updatePassword(String password, int count, int id) {
-		System.out.println("invoking updatePassword");
+		logger.info("invoking updatePassword");
 		Session session = null;
 		try {
 			session = sessionFactory.openSession();
@@ -58,7 +62,7 @@ public class ForgotPasswordDAOImpl implements ForgotPasswordDAO {
 			return 1;
 		} catch (Exception e) {
 			session.getTransaction().rollback();
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (Objects.nonNull(session)) {
 				session.close();

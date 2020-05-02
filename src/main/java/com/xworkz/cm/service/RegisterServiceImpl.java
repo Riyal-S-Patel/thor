@@ -5,6 +5,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,12 +29,14 @@ public class RegisterServiceImpl implements RegisterService {
 
 	private static SecureRandom random = new SecureRandom();
 
+	private static final Logger logger = Logger.getLogger(RegisterServiceImpl.class);
+
 	public RegisterServiceImpl() {
-		System.out.println("created \t" + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 
 	public Map<String, Object> isValidate(RegisterDTO registerDTO) {
-		System.out.println("invoking \t isValidate");
+		logger.info("invoking \t isValidate");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("isValid", true);
 		if (registerDTO.getUserId() == null || registerDTO.getUserId().isEmpty()) {
@@ -61,7 +64,7 @@ public class RegisterServiceImpl implements RegisterService {
 		if (registerDTO.getPhoneNo() == null) {
 			map.put("isValid", false);
 			map.put("phoneNo", "phone number should not be empty");
-		} else if (registerDTO.getPhoneNo().toString().length() ==11) {
+		} else if (registerDTO.getPhoneNo().toString().length() == 11) {
 			map.put("phoneNo", "given number is not valid");
 		}
 
@@ -91,15 +94,15 @@ public class RegisterServiceImpl implements RegisterService {
 			char rndChar = CHARS.charAt(rndCharAt);
 			sb.append(rndChar);
 		}
-		//registerDTO.setPassword(sb.toString());
+		// registerDTO.setPassword(sb.toString());
 		RegisterEntity registerEntity = new RegisterEntity();
 		BeanUtils.copyProperties(registerDTO, registerEntity);
 		registerEntity.setPassword(bCryptPasswordEncoder.encode(sb));
-		Serializable result=dao.saveRegister(registerEntity);
-		if(result!=null) {
+		Serializable result = dao.saveRegister(registerEntity);
+		if (result != null) {
 			return sb.toString();
 		}
 		return null;
-		
+
 	}
 }

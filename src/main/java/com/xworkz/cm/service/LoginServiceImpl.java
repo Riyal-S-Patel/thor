@@ -1,5 +1,6 @@
 package com.xworkz.cm.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,14 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	private static final Logger logger = Logger.getLogger(LoginServiceImpl.class);
+
 	public LoginServiceImpl() {
-		System.out.println("created \t " + this.getClass().getSimpleName());
+		logger.info("created \t" + this.getClass().getSimpleName());
 	}
 
 	public RegisterEntity validateLogin(LoginDTO loginDTO, Model model) {
-		System.out.println("invoking validateLogin()....");
+		logger.info("invoking validateLogin()....");
 		try {
 			// RegisterEntity entity = this.loginDAO.getEmailAndPassword(loginDTO);
 			RegisterEntity entity = this.loginDAO.getByEmail(loginDTO.getEmail());
@@ -31,12 +34,12 @@ public class LoginServiceImpl implements LoginService {
 					if (entity.getCount() < 4 && entity.getCount() >= 0) {
 						if (entity.getCount() != 0) {
 							this.loginDAO.updateCountByEmail(0, entity.getEmail());
-							System.out.println("user Count is Updated by 0");
+							logger.info("user Count is Updated by 0");
 						}
-						System.out.println("email and password is valid");
+						logger.info("email and password is valid");
 						return entity;
 					} else {
-						System.out.println("Register User is blocked");
+						logger.info("Register User is blocked");
 						model.addAttribute("block", "Register User is blocked");
 						return null;
 					}
@@ -47,18 +50,18 @@ public class LoginServiceImpl implements LoginService {
 						this.loginDAO.updateCountByEmail(entity.getCount(), entity.getEmail());
 					}
 					if (entity.getCount() > 3) {
-						System.out.println("Register user is blocked");
+						logger.info("Register user is blocked");
 						model.addAttribute("block", "Register User is blocked");
 					}
-					System.out.println("email and password is not valid");
+					logger.info("email and password is not valid");
 					return null;
 				}
 			} else {
-				System.out.println("email is not present");
+				logger.info("email is not present");
 				return null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
